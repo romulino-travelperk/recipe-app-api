@@ -75,9 +75,9 @@ class Recipe(models.Model):
     time_in_minutes = models.IntegerField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     link = models.CharField(max_length=255, blank=True)
-    tags = models.ManyToManyField('Tag')
-    ingredients = models.ManyToManyField('Ingredient')
-    image = models.ImageField(null=True, upload_to=recipe_image_file_path)
+    tags = models.ManyToManyField('Tag', blank=True)
+    ingredients = models.ManyToManyField('Ingredient', blank=True)
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path, blank=True)
 
     def __str__(self):
         return self.title
