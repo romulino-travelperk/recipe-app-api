@@ -74,7 +74,7 @@ class ModelTests(TestCase):
         self.assertEqual(str(recipe), recipe.title)
 
     @patch('uuid.uuid4')
-    def test_recipe_file_name_is_uuid(self, mocked_uuid4):
+    def test_recipe_image_file_name_is_uuid(self, mocked_uuid4):
         fake_uuid = 'fake-uuid'
         mocked_uuid4.return_value = fake_uuid
 
