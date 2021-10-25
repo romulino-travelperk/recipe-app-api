@@ -255,8 +255,10 @@ class PrivateRecipesApiTests(TestCase):
         recipe2 = create_sample_recipe(user=self.user, title='Recipe 2')
         recipe3 = create_sample_recipe(user=self.user, title='Recipe 3')
 
-        ingredient1 = create_sample_ingredient(user=self.user, name='an Ingredient')
-        ingredient2 = create_sample_ingredient(user=self.user, name='another Ingredient')
+        ingredient1 = create_sample_ingredient(user=self.user,
+                                               name='an Ingredient')
+        ingredient2 = create_sample_ingredient(user=self.user,
+                                               name='another Ingredient')
 
         recipe1.ingredients.add(ingredient1)
         recipe2.ingredients.add(ingredient2)
