@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
@@ -10,7 +11,8 @@ from recipe import serializers
 
 class BaseRecipeAttrViewSet(viewsets.GenericViewSet,
                             mixins.ListModelMixin,
-                            mixins.CreateModelMixin):
+                            mixins.CreateModelMixin,
+                            mixins.DestroyModelMixin):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (TokenAuthentication,)
 
@@ -21,20 +23,40 @@ class BaseRecipeAttrViewSet(viewsets.GenericViewSet,
         if assigned_only:
             queryset = queryset.filter(recipe__isnull=False)
 
-        return queryset.filter(user=self.request.user).order_by('-name').distinct()
+        return queryset.filter(user=self.request.user).order_by('name').distinct()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def retrieve(self, request, pk=None):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj)
+        return Response(serializer.data)
+
 
 class TagViewSet(BaseRecipeAttrViewSet):
-    queryset = Tag.objects.all()
+    queryset = Tag.objects.all().order_by('-name')
     serializer_class = serializers.TagSerializer
+
+    def update(self, request, pk=None):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        print(serializer.validated_data)
+        Tag.objects.filter(id=pk).update_or_create(serializer.data)
+        return Response(serializer.validated_data)
 
 
 class IngredientViewSet(BaseRecipeAttrViewSet):
-    queryset = Ingredient.objects.all()
+    queryset = Ingredient.objects.all().order_by('-name')
     serializer_class = serializers.IngredientSerializer
+
+    def update(self, request, pk=None):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        print(serializer.validated_data)
+        Ingredient.objects.filter(id=pk).update_or_create(serializer.data)
+        return Response(serializer.validated_data)
+
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
